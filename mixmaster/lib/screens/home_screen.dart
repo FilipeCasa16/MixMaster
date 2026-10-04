@@ -79,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
         List<Drink>? bySearch;
         List<Drink>? byIng;
         if (q.isNotEmpty) {
-          bySearch = await CocktailApi.searchDrinks(q);
+          bySearch = await CocktailApi.searchByName(q);
         }
         if (ings.isNotEmpty) {
           byIng = await CocktailApi.filterByIngredients(ings);
@@ -143,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
     var i = 0;
     var big = true;
     while (i < _drinks.length) {
-      final chunk = _drinks.skip(i).take(4).toList();
+      final chunk = _drinks.skip(i).take(big ? 4 : 8).toList();
       i += chunk.length;
       if (big) {
         for (var r = 0; r < chunk.length; r += 2) {
@@ -166,22 +166,52 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }
       } else {
-        for (var r = 0; r < chunk.length; r += 2) {
+        for (var rowStart = 0; rowStart < 2; rowStart++) {
+          final rowDrinks = chunk.skip(rowStart * 4).take(4).toList();
           widgets.add(
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: SizedBox(
                 height: 112,
-                child: Row(
-                  children: [
-                    Expanded(child: SmallDrinkCard(chunk[r])),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: r + 1 < chunk.length
-                          ? SmallDrinkCard(chunk[r + 1])
-                          : const SizedBox.shrink(),
-                    ),
-                  ],
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final cardWidth = (constraints.maxWidth * 0.54)
+                        .clamp(220.0, 350.0)
+                        .toDouble();
+                    return Stack(
+                      children: [
+                        ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.only(right: 48),
+                          itemCount: rowDrinks.length,
+                          separatorBuilder: (_, _) => const SizedBox(width: 12),
+                          itemBuilder: (_, index) => SizedBox(
+                            width: cardWidth,
+                            child: SmallDrinkCard(rowDrinks[index]),
+                          ),
+                        ),
+                        Positioned(
+                          top: 38,
+                          right: 4,
+                          child: IgnorePointer(
+                            child: Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                color: AppColors.bg.withAlpha(230),
+                                shape: BoxShape.circle,
+                                border: Border.all(color: AppColors.border),
+                              ),
+                              child: const Icon(
+                                Icons.chevron_right_rounded,
+                                color: AppColors.accent,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
             ),
@@ -204,7 +234,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onSubmitted: (_) => _load(),
             textInputAction: TextInputAction.search,
             decoration: InputDecoration(
-              hintText: 'Buscar drinks ou ingredientes...',
+              hintText: 'Buscar drinks pelo nome...',
               hintStyle: const TextStyle(color: AppColors.muted),
               prefixIcon: const Icon(Icons.search, color: AppColors.muted),
               suffixIcon: _search.text.isEmpty
@@ -296,8 +326,15 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
         children: [
           Row(
-            children: const [
-              Icon(Icons.local_bar, color: AppColors.accent, size: 36),
+            children: [
+              SizedBox(
+                width: 44,
+                height: 44,
+                child: Image.asset(
+                  'assets/images/mixmaster-logo.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
               Expanded(
                 child: Text(
                   'MixMaster',
@@ -305,7 +342,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
                 ),
               ),
-              SizedBox(width: 36),
+              const SizedBox(width: 44),
             ],
           ),
           const SizedBox(height: 20),

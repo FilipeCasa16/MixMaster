@@ -184,7 +184,8 @@ class _DrinkDetailScreenState extends State<DrinkDetailScreen> {
                   const Icon(Icons.sports_bar_outlined,
                       size: 18, color: AppColors.muted),
                   const SizedBox(width: 6),
-                  Text(localized?.glass ?? d.glass!,
+                  Text(
+                      localized?.glass ?? cleanTranslationOutput(d.glass!),
                       style: const TextStyle(
                           color: AppColors.muted, fontSize: 15)),
                 ],
@@ -213,7 +214,9 @@ class _DrinkDetailScreenState extends State<DrinkDetailScreen> {
                       localized != null &&
                               index < localized.ingredientNames.length
                           ? localized.ingredientNames[index]
-                          : d.ingredients[index].name,
+                          : cleanTranslationOutput(
+                              d.ingredients[index].name,
+                            ),
                       style: const TextStyle(
                           fontSize: 17, fontWeight: FontWeight.w600)),
                 ),
@@ -237,7 +240,8 @@ class _DrinkDetailScreenState extends State<DrinkDetailScreen> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
           const SizedBox(height: 10),
           Text(
-            localized?.instructions ?? d.instructions!,
+            localized?.instructions ??
+                cleanTranslationOutput(d.instructions!),
             style: const TextStyle(
                 color: AppColors.muted, fontSize: 16, height: 1.55),
           ),

@@ -348,7 +348,9 @@ class _IngredientDialog extends StatelessWidget {
                                 child: Text(
                                   'Traduzindo descrição...',
                                   style: TextStyle(
-                                      color: AppColors.muted, fontSize: 12),
+                                    color: AppColors.muted,
+                                    fontSize: 12,
+                                  ),
                                 ),
                               ),
                             if (translation.hasError)
@@ -361,7 +363,8 @@ class _IngredientDialog extends StatelessWidget {
                                 ),
                               ),
                             Text(
-                              translation.data ?? ing.description!.trim(),
+                              translation.data ??
+                                  cleanTranslationOutput(ing.description!),
                               textAlign: TextAlign.center,
                               maxLines: 8,
                               overflow: TextOverflow.ellipsis,

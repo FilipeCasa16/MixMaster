@@ -67,32 +67,6 @@ class CocktailApi {
   static Future<List<Drink>> searchByName(String name) async =>
       _drinks(await _get('search.php', {'s': name}));
 
-  static Future<List<Drink>> searchDrinks(String query) async {
-    final englishQuery = _ingredientQuery(query);
-    final results = await Future.wait([
-      searchByName(englishQuery),
-      filterByIngredient(englishQuery),
-      if (query.trim().length >= 3)
-        _searchDrinksByMatchingIngredients(englishQuery),
-    ]);
-    final byId = <String, Drink>{};
-    for (final drink in results.expand((drinks) => drinks)) {
-      final previous = byId[drink.id];
-      if (previous == null || (!previous.detailed && drink.detailed)) {
-        byId[drink.id] = drink;
-      }
-    }
-    return byId.values.toList();
-  }
-
-  static Future<List<Drink>> _searchDrinksByMatchingIngredients(
-    String query,
-  ) async {
-    final names = await searchIngredientNames(query);
-    final lists = await Future.wait(names.map(filterByIngredient));
-    return lists.expand((drinks) => drinks).toList();
-  }
-
   /// The free API key only lists the first 100 ingredients. Look up an exact
   /// search term as well so ingredients outside that initial list are findable.
   static Future<List<String>> searchIngredientNames(String query) async {

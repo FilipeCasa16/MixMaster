@@ -6,6 +6,20 @@ import '../data/recipe_localization.dart';
 import '../screens/drink_detail_screen.dart';
 import 'common.dart';
 
+String _drinkRecipeFact(Drink drink) {
+  final alcoholLabel = switch (drink.alcoholic?.toLowerCase()) {
+    'alcoholic' => 'Alcoólico',
+    'non alcoholic' => 'Sem álcool',
+    _ => null,
+  };
+  final ingredientCount = drink.ingredients.length;
+  return [
+    ?alcoholLabel,
+    if (ingredientCount > 0)
+      '$ingredientCount ${ingredientCount == 1 ? 'ingrediente' : 'ingredientes'}',
+  ].join(' · ');
+}
+
 void openDrink(BuildContext context, Drink drink) {
   Navigator.of(context).push(
     MaterialPageRoute(
@@ -35,7 +49,10 @@ class BigDrinkCard extends StatelessWidget {
           children: [
             AspectRatio(
               aspectRatio: 1.3,
-              child: NetImage(drink.thumbSized('medium'), fallback: drink.thumb),
+              child: NetImage(
+                drink.thumbSized('medium'),
+                fallback: drink.thumb,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
@@ -47,11 +64,26 @@ class BigDrinkCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w700),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   if (drink.category != null) ...[
                     const SizedBox(height: 8),
                     Tag(localizedDrinkCategory(drink.category!)),
+                  ],
+                  if (_drinkRecipeFact(drink).isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      _drinkRecipeFact(drink),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: AppColors.accent,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ],
                 ],
               ),
@@ -88,7 +120,10 @@ class SmallDrinkCard extends StatelessWidget {
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,7 +133,9 @@ class SmallDrinkCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w700),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                     if (drink.category != null) ...[
                       const SizedBox(height: 4),
@@ -107,7 +144,22 @@ class SmallDrinkCard extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                            color: AppColors.muted, fontSize: 14),
+                          color: AppColors.muted,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                    if (_drinkRecipeFact(drink).isNotEmpty) ...[
+                      const SizedBox(height: 5),
+                      Text(
+                        _drinkRecipeFact(drink),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: AppColors.accent,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ],
                   ],
