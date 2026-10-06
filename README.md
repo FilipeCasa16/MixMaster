@@ -118,13 +118,6 @@ O app abre sozinho no navegador. Para outros dispositivos, use `flutter devices`
 Ao abrir, a Home mostra os drinks com imagem. Teste também: **Ver mais**, o **filtro de ingredientes**, a aba **Ingredientes**, o **Sorteio** (abre os detalhes do drink sozinho) e a tradução na tela de detalhes.
 
 
-## Lista de Pendências
-
-- [ ] **Tela de Login:** Ainda falta uma tela para criar e entrar em uma conta, nela vai ter a opção de visualizar os drinks favoritados.
-- [ ] **Favoritos não são salvos:** ficam só na memória e somem ao fechar o app. Também falta a tela para listá-los.
-- [ ] **Tradução automática:** Elas podem errar, dependem de internet. Modos de preparo muito longos podem aparecer em inglês.
-- [ ] **Nomes de ingredientes:** Ainda existem alguns problemas de formatação nos nomes dos ingredientes na versão do celular 
-
 ---
 
 <br>
