@@ -349,7 +349,7 @@ class _HomeScreenState extends State<HomeScreen> {
           _searchRow(),
           ListenableBuilder(
             listenable: appState,
-            builder: (_, __) => _selectedChips(),
+            builder: (_, _) => _selectedChips(),
           ),
           const SizedBox(height: 22),
           Row(

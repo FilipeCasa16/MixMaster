@@ -46,12 +46,12 @@ class NetImage extends StatelessWidget {
     return Image.network(
       url!,
       fit: fit,
-      errorBuilder: (_, __, ___) => fallback == null
+      errorBuilder: (_, _, _) => fallback == null
           ? _placeholder()
           : Image.network(
               fallback!,
               fit: fit,
-              errorBuilder: (_, __, ___) => _placeholder(),
+              errorBuilder: (_, _, _) => _placeholder(),
             ),
       loadingBuilder: (_, child, progress) => progress == null
           ? child
@@ -82,7 +82,7 @@ class IngredientImage extends StatelessWidget {
     final img = Image.network(
       CocktailApi.ingredientImage(name, size: imageSize),
       fit: BoxFit.contain,
-      errorBuilder: (_, __, ___) =>
+      errorBuilder: (_, _, _) =>
           const Icon(Icons.liquor, color: AppColors.muted),
     );
     return Container(
@@ -109,6 +109,8 @@ class IngredientTypeText extends StatelessWidget {
       future: CocktailApi.ingredientDetails(name),
       builder: (_, snap) => Text(
         snap.data?.label ?? ' ',
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
         style: const TextStyle(color: AppColors.muted, fontSize: 13),
       ),
     );

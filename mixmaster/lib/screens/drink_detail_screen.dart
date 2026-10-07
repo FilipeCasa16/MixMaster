@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../core/app_state.dart';
 import '../core/theme.dart';
 import '../data/cocktail_api.dart';
+import '../data/local_database.dart';
 import '../data/models.dart';
 import '../data/recipe_localization.dart';
 import '../data/translation_service.dart';
@@ -115,11 +116,39 @@ class _DrinkDetailScreenState extends State<DrinkDetailScreen> {
               if (drink != null)
                 ListenableBuilder(
                   listenable: appState,
-                  builder: (_, __) {
+                  builder: (_, _) {
                     final fav = appState.isFavorite(drink.id);
                     return _circleButton(
                       fav ? Icons.favorite : Icons.favorite_border,
-                      () => appState.toggleFavorite(drink.id),
+                      () async {
+                        final messenger = ScaffoldMessenger.of(context);
+                        final navigator = Navigator.of(context);
+                        try {
+                          await appState.toggleFavorite(drink);
+                        } catch (error) {
+                          if (!context.mounted) return;
+                          messenger.showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                error is AccountException
+                                    ? error.message
+                                    : 'Não foi possível atualizar os favoritos.',
+                              ),
+                              action: error is AccountException
+                                  ? SnackBarAction(
+                                      label: 'Entrar',
+                                      onPressed: () {
+                                        navigator.popUntil(
+                                          (route) => route.isFirst,
+                                        );
+                                        appState.setTab(3);
+                                      },
+                                    )
+                                  : null,
+                            ),
+                          );
+                        }
+                      },
                       color: fav ? AppColors.red : Colors.white,
                     );
                   },

@@ -96,6 +96,10 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
   @override
   Widget build(BuildContext context) {
     final q = _query.text.trim().toLowerCase();
+    final textScaler = MediaQuery.textScalerOf(context);
+    final scaledCardExtent =
+        2 * (textScaler.scale(15) + textScaler.scale(13)) * 1.25 + 10;
+    final cardExtent = scaledCardExtent > 78 ? scaledCardExtent : 78.0;
     final shown =
         q.isEmpty
               ? _all
@@ -175,11 +179,11 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
                           child: GridView.builder(
                             padding: const EdgeInsets.only(bottom: 16),
                             gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
                                   mainAxisSpacing: 12,
                                   crossAxisSpacing: 12,
-                                  mainAxisExtent: 78,
+                                  mainAxisExtent: cardExtent,
                                 ),
                             itemCount: shown.length,
                             itemBuilder: (_, i) => _IngredientCard(
