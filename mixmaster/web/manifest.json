@@ -1,11 +1,11 @@
 {
-    "name": "mixmaster",
-    "short_name": "mixmaster",
+    "name": "MixMaster",
+    "short_name": "MixMaster",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#060C0A",
+    "theme_color": "#060C0A",
+    "description": "Descubra drinks, ingredientes e receitas com o MixMaster.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

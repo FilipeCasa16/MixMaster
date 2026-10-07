@@ -105,6 +105,14 @@ flutter:
 > [!WARNING]
 > Sem o arquivo da logo ou sem a linha `assets:`, a Home mostra um erro de "asset não encontrado".
 
+O ícone do aplicativo para Android, iOS e instalação web é gerado a partir de
+`mixmaster/assets/images/mixmaster-app-icon.png`. Para recriar os tamanhos
+nativos depois de alterar a imagem, rode dentro da pasta `mixmaster`:
+
+```bash
+dart run flutter_launcher_icons
+```
+
 ### Quarto Passo: Executar o App
 
 ```bash
