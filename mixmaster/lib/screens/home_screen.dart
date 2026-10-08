@@ -11,6 +11,8 @@ import '../widgets/common.dart';
 import '../widgets/drink_cards.dart';
 import '../widgets/ingredient_filter_sheet.dart';
 
+enum _AlcoholFilter { all, alcoholic, nonAlcoholic }
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -28,9 +30,15 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _moreError;
   int _token = 0;
   List<String> _lastIngredients = [];
+  _AlcoholFilter _alcoholFilter = _AlcoholFilter.all;
+  List<Drink> _randomPool = [];
+  int _randomOffset = 0;
 
   bool get _isRandom =>
       _search.text.trim().isEmpty && appState.filterIngredients.isEmpty;
+  bool get _hasMoreRandomDrinks =>
+      _alcoholFilter == _AlcoholFilter.all ||
+      _randomOffset < _randomPool.length;
 
   @override
   void initState() {
@@ -73,8 +81,19 @@ class _HomeScreenState extends State<HomeScreen> {
       final q = _search.text.trim();
       final ings = List<String>.from(appState.filterIngredients);
       List<Drink> result;
+      var randomPool = <Drink>[];
+      var randomOffset = 0;
       if (q.isEmpty && ings.isEmpty) {
-        result = await CocktailApi.randomDrinks(12);
+        if (_alcoholFilter == _AlcoholFilter.all) {
+          result = await CocktailApi.randomDrinks(12);
+        } else {
+          randomPool = await CocktailApi.filterByAlcoholic(
+            _alcoholFilter == _AlcoholFilter.alcoholic,
+          );
+          randomPool.shuffle();
+          result = randomPool.take(12).toList();
+          randomOffset = result.length;
+        }
       } else {
         List<Drink>? bySearch;
         List<Drink>? byIng;
@@ -90,10 +109,22 @@ class _HomeScreenState extends State<HomeScreen> {
         } else {
           result = bySearch ?? byIng ?? [];
         }
+        if (_alcoholFilter != _AlcoholFilter.all) {
+          final expected = _alcoholFilter == _AlcoholFilter.alcoholic
+              ? 'alcoholic'
+              : 'non alcoholic';
+          result = result
+              .where(
+                (drink) => drink.alcoholic?.trim().toLowerCase() == expected,
+              )
+              .toList();
+        }
       }
       if (!mounted || token != _token) return;
       setState(() {
         _drinks = result;
+        _randomPool = randomPool;
+        _randomOffset = randomOffset;
         _loading = false;
       });
     } catch (_) {
@@ -113,6 +144,15 @@ class _HomeScreenState extends State<HomeScreen> {
       _moreError = null;
     });
     try {
+      if (_alcoholFilter != _AlcoholFilter.all) {
+        final more = _randomPool.skip(_randomOffset).take(8).toList();
+        if (!mounted || token != _token || !_isRandom) return;
+        setState(() {
+          _drinks = [..._drinks, ...more];
+          _randomOffset += more.length;
+        });
+        return;
+      }
       final more = await CocktailApi.randomDrinks(
         8,
         exclude: _drinks.map((d) => d.id).toSet(),
@@ -296,6 +336,47 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _alcoholFilterSelector() {
+    return SegmentedButton<_AlcoholFilter>(
+      segments: const [
+        ButtonSegment(value: _AlcoholFilter.all, label: Text('Todos')),
+        ButtonSegment(
+          value: _AlcoholFilter.alcoholic,
+          label: Text('Alcoólicos'),
+        ),
+        ButtonSegment(
+          value: _AlcoholFilter.nonAlcoholic,
+          label: Text('Sem álcool'),
+        ),
+      ],
+      selected: {_alcoholFilter},
+      showSelectedIcon: false,
+      style: ButtonStyle(
+        foregroundColor: WidgetStateProperty.resolveWith((states) {
+          return states.contains(WidgetState.selected)
+              ? Colors.black
+              : AppColors.muted;
+        }),
+        backgroundColor: WidgetStateProperty.resolveWith((states) {
+          return states.contains(WidgetState.selected)
+              ? AppColors.accent
+              : AppColors.card;
+        }),
+        side: WidgetStateProperty.resolveWith((states) {
+          return BorderSide(
+            color: states.contains(WidgetState.selected)
+                ? AppColors.accent
+                : AppColors.border,
+          );
+        }),
+      ),
+      onSelectionChanged: (selection) {
+        setState(() => _alcoholFilter = selection.first);
+        _load();
+      },
+    );
+  }
+
   Widget _selectedChips() {
     final ings = appState.filterIngredients;
     if (ings.isEmpty) return const SizedBox.shrink();
@@ -347,6 +428,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 20),
           _searchRow(),
+          const SizedBox(height: 12),
+          _alcoholFilterSelector(),
           ListenableBuilder(
             listenable: appState,
             builder: (_, _) => _selectedChips(),
@@ -357,7 +440,11 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Text(
                 _isRandom
-                    ? 'Drinks Aleatórios'
+                    ? switch (_alcoholFilter) {
+                        _AlcoholFilter.all => 'Drinks Aleatórios',
+                        _AlcoholFilter.alcoholic => 'Drinks Alcoólicos',
+                        _AlcoholFilter.nonAlcoholic => 'Drinks sem álcool',
+                      }
                     : 'Resultados${_loading ? '' : ' (${_drinks.length})'}',
                 style: const TextStyle(
                   fontSize: 20,
@@ -386,7 +473,10 @@ class _HomeScreenState extends State<HomeScreen> {
             )
           else
             ..._buildBlocks(),
-          if (_isRandom && !_loading && _error == null) ...[
+          if (_isRandom &&
+              _hasMoreRandomDrinks &&
+              !_loading &&
+              _error == null) ...[
             const SizedBox(height: 8),
             if (_moreError != null)
               Padding(

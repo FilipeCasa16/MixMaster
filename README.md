@@ -10,7 +10,7 @@ Trabalho de **DSDM** — **Filipe Casadei** e **Laura L. Faccin**.
 
 ## Descrição do Projeto
 
-O **MixMaster** é um aplicativo de drinks feito em **Flutter**. Nele é possível descobrir drinks, buscar pelo nome, **filtrar por ingredientes**, sortear um drink de acordo com o humor e ver a receita completa.
+O **MixMaster** é um aplicativo de drinks feito em **Flutter**. Nele é possível descobrir drinks, buscar pelo nome, filtrar por ingredientes e por tipo, sortear um drink de acordo com o humor e ver a receita completa.
 
 Todos os drinks, ingredientes, imagens, medidas e receitas vêm de uma API pública chamada TheCocktailDB pelo link "https://www.thecocktaildb.com/documentation". Nenhum drink é escrito "na mão" no código.
 
@@ -20,7 +20,7 @@ Todos os drinks, ingredientes, imagens, medidas e receitas vêm de uma API públ
 
 | Tela | O que faz |
 |---|---|
-|  **Home** | Lista drinks aleatórios, alternando entre cards. Tem busca por nome, filtro por ingredientes e botão **Ver mais** no final da página para visualizar uma continuação da lista aleatória de drinks. |
+|  **Home** | Lista drinks aleatórios, alternando entre cards. Tem busca por nome, filtros por ingredientes e tipo de drink e botão **Ver mais** no final da página para visualizar uma continuação da lista aleatória. |
 |  **Ingredientes** | Mostra todos os ingredientes com imagem e busca. Ao tocar em um, abre um popup com detalhes e o botão **Ver Drinks com X**, que leva para a Home já filtrada |
 |  **Sorteio** | Escolha seu humor e sorteie um drink. A tela de detalhes do drink sorteado abre automaticamente |
 |  **Detalhes** | Mostra a Imagem, categoria, copo, ingredientes com medidas, modo de preparo de cada drink |
@@ -123,7 +123,7 @@ O app abre sozinho no navegador. Para outros dispositivos, use `flutter devices`
 
 ###  Como saber se funcionou
 
-Ao abrir, a Home mostra os drinks com imagem. Teste também: **Ver mais**, o **filtro de ingredientes**, a aba **Ingredientes**, o **Sorteio** (abre os detalhes do drink sozinho) e a tradução na tela de detalhes.
+Ao abrir, a Home mostra os drinks com imagem. Teste também: **Ver mais**, os filtros de **tipo de drink** e de **ingredientes**, a aba **Ingredientes**, o **Sorteio** (abre os detalhes do drink sozinho) e a tradução na tela de detalhes.
 
 
 ---

@@ -67,6 +67,13 @@ class CocktailApi {
   static Future<List<Drink>> searchByName(String name) async =>
       _drinks(await _get('search.php', {'s': name}));
 
+  static Future<List<Drink>> filterByAlcoholic(bool alcoholic) async {
+    final expected = alcoholic ? 'alcoholic' : 'non alcoholic';
+    return (await _allDrinks())
+        .where((drink) => drink.alcoholic?.trim().toLowerCase() == expected)
+        .toList();
+  }
+
   /// The free API key only lists the first 100 ingredients. Look up an exact
   /// search term as well so ingredients outside that initial list are findable.
   static Future<List<String>> searchIngredientNames(String query) async {
