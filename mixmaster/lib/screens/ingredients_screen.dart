@@ -98,7 +98,7 @@ class _IngredientsScreenState extends State<IngredientsScreen> {
     final q = _query.text.trim().toLowerCase();
     final textScaler = MediaQuery.textScalerOf(context);
     final scaledCardExtent =
-        2 * (textScaler.scale(15) + textScaler.scale(13)) * 1.25 + 10;
+        2 * (textScaler.scale(15) + textScaler.scale(13)) * 1.25 + 18;
     final cardExtent = scaledCardExtent > 78 ? scaledCardExtent : 78.0;
     final shown =
         q.isEmpty

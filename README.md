@@ -12,7 +12,7 @@ Trabalho de **DSDM** — **Filipe Casadei** e **Laura L. Faccin**.
 
 O **MixMaster** é um aplicativo de drinks feito em **Flutter**. Nele é possível descobrir drinks, buscar pelo nome, filtrar por ingredientes e por tipo, sortear um drink de acordo com o humor, ver a receita completa e salvar seus drinks favoritos em uma conta.
 
-Todos os drinks, ingredientes, imagens, medidas e receitas vêm de uma API pública chamada TheCocktailDB pelo link "https://www.thecocktaildb.com/documentation". Nenhum drink é escrito "na mão" no código.
+Todos os drinks, ingredientes, imagens, medidas e receitas vêm de uma API pública chamada TheCocktailDB pelo link "https://www.thecocktaildb.com/documentation". 
 
 ---
 
